@@ -1,3 +1,9 @@
+// Format time in MM:SS
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+}
 
 // Handle all play buttons
 document.querySelectorAll("button[data-audio]").forEach((button) => {
@@ -7,6 +13,12 @@ document.querySelectorAll("button[data-audio]").forEach((button) => {
   const volumeSlider = document.querySelector(
     `input[data-volume="${audioId}"]`
   );
+  const timeDisplay = button.parentElement.querySelector(".time-display");
+
+  // Update time display when metadata is loaded
+  audio.addEventListener("loadedmetadata", () => {
+    timeDisplay.textContent = `0:00 / ${formatTime(audio.duration)}`;
+  });
 
   // Add error handling
   audio.addEventListener("error", (e) => {
@@ -57,15 +69,21 @@ document.querySelectorAll("button[data-audio]").forEach((button) => {
     }
   });
 
-  // Update seek bar while playing
+  // Update seek bar and time display while playing
   audio.addEventListener("timeupdate", () => {
     seekBar.value = audio.currentTime;
     seekBar.max = audio.duration;
+    timeDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(
+      audio.duration
+    )}`;
   });
 
   // Scrub audio
   seekBar.addEventListener("input", () => {
     audio.currentTime = seekBar.value;
+    timeDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(
+      audio.duration
+    )}`;
   });
 
   // Volume control
@@ -79,13 +97,12 @@ document.querySelectorAll("button[data-audio]").forEach((button) => {
   });
 });
 
-
-
-const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-              (navigator.userAgent.includes("Macintosh") && 'ontouchend' in document);
+const isiOS =
+  /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  (navigator.userAgent.includes("Macintosh") && "ontouchend" in document);
 
 if (isiOS) {
-  document.querySelectorAll('input[data-volume]').forEach(el => {
-    el.style.display = 'none';
+  document.querySelectorAll("input[data-volume]").forEach((el) => {
+    el.style.display = "none";
   });
 }
