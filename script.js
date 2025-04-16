@@ -78,3 +78,13 @@ document.querySelectorAll("button[data-audio]").forEach((button) => {
     button.textContent = "▶️";
   });
 });
+
+
+
+const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+if (isiOS) {
+  document.querySelectorAll('input[data-volume]').forEach(el => {
+    el.style.display = 'none';
+  });
+}
