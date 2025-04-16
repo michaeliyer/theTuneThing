@@ -81,7 +81,8 @@ document.querySelectorAll("button[data-audio]").forEach((button) => {
 
 
 
-const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.userAgent.includes("Macintosh") && 'ontouchend' in document);
 
 if (isiOS) {
   document.querySelectorAll('input[data-volume]').forEach(el => {
